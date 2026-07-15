@@ -1,14 +1,44 @@
 import React , {useState} from "react";
+import { loginUser } from "../services/auth.js";
+import { useNavigate } from  "react-router-dom"
 
 const Login = () => {
+
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         username: "",
         password: "",
       });
     
-      const handleSubmit = (e)=>{
-        e.preventDefault()
+      const handleSubmit = async(e)=>{
+        e.preventDefault();
+
+        const { username , password} =  formData
+
+       try {
+        if(!username || !password) {
+            alert("Please fill all fields")
+            return
+        }
+
+        const response = await loginUser(formData)
+        console.log(response)
+
+        localStorage.setItem("accessToken", response.data.accessToken)
+        console.log(`Access Token : ${localStorage.getItem("accessToken")}`)
+        alert("Login Successful")
+        navigate('/dashboard')
+
+        setFormData({
+            username : "",
+            password : ""
+        })
+
+       } catch (error) {
+        console.error(error)
+       }
+
       }
     
       

@@ -1,6 +1,15 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
+import { registerUser } from "../services/auth.js";
+import { useNavigate } from  "react-router-dom"
+
 
 function Register() {
+
+  const navigate = useNavigate();
+
+
+
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -8,8 +17,33 @@ function Register() {
     role: "USER",
   });
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const { username , email , password , role} = formData
+
+    try {
+      if (!username || !email || !password) {
+        alert("Please fill all fields")
+        return;
+      }
+
+      const response = await registerUser(formData);
+      console.log(response);
+
+      alert("Registration Successful");
+      navigate("/login");
+
+      setFormData({
+        username: "",
+        email: "",
+        password: "",
+        role: "USER",
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleChange = (e) => {
